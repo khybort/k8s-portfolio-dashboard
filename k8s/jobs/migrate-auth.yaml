@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-auth
+  namespace: portfolio
+spec:
+  template:
+    spec:
+      containers:
+      - name: migrate
+        image: portfolio-auth:latest
+        imagePullPolicy: Never
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            /root/main migrate
+            /root/main seed
+        env:
+        - name: DB_HOST
+          value: "postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: "portfolio"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: db-password
+        - name: AUTH_DB_NAME
+          value: "auth_db"
+      restartPolicy: Never
+  backoffLimit: 3
+

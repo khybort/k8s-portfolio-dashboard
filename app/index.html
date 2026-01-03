@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>Portfolio Dashboard - Kubernetes Demo</title>
+    <meta name="title" content="Portfolio Dashboard - Kubernetes Demo" />
+    <meta name="description" content="Modern portfolio dashboard deployed on Kubernetes. Docker, Nginx, and Kubernetes showcase." />
+    <meta name="keywords" content="portfolio, kubernetes, docker, nginx, web development, devops" />
+    <meta name="author" content="Portfolio Dashboard" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Turkish" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://portfolio.example.com/" />
+    <meta property="og:title" content="Portfolio Dashboard - Kubernetes Demo" />
+    <meta property="og:description" content="Modern portfolio dashboard deployed on Kubernetes" />
+    <meta property="og:image" content="https://portfolio.example.com/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://portfolio.example.com/" />
+    <meta property="twitter:title" content="Portfolio Dashboard - Kubernetes Demo" />
+    <meta property="twitter:description" content="Modern portfolio dashboard deployed on Kubernetes" />
+    <meta property="twitter:image" content="https://portfolio.example.com/og-image.png" />
+    
+    <!-- PWA -->
+    <meta name="theme-color" content="#1a1a1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <header class="container header">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">P</div>
+        <div>
+          <div class="title">Portfolio Dashboard</div>
+          <div class="subtitle">Kubernetes üzerinde çalışan basit demo</div>
+        </div>
+      </div>
+      <div class="pill">
+        <span class="dot"></span>
+        <span id="statusText">Running</span>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="grid">
+        <article class="card">
+          <div class="cardTitle">Hakkımda</div>
+          <p class="muted">
+            Merhaba! Ben <strong>Muhsin</strong>. Bu sayfa statik bir web uygulaması; Docker ile paketlenip Kubernetes'e deploy edilir.
+          </p>
+          <div class="chips">
+            <span class="chip">Docker</span>
+            <span class="chip">Kubernetes</span>
+            <span class="chip">Nginx</span>
+            <span class="chip">HTML/CSS</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="cardTitle">Projeler</div>
+          <ul class="list">
+            <li><span class="badge">1</span> Retail Analytics Dashboard</li>
+            <li><span class="badge">2</span> Data Ingestion Service</li>
+            <li><span class="badge">3</span> Campaign Automation Tools</li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="#contact">İletişim</a>
+            <a class="btnSecondary" href="#" data-theme-toggle>Tema</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="cardTitle">Cluster Bilgisi</div>
+          <div class="kv">
+            <div class="k">Namespace</div>
+            <div class="v"><code>portfolio</code></div>
+            <div class="k">Service</div>
+            <div class="v"><code>portfolio-dashboard</code></div>
+            <div class="k">Port</div>
+            <div class="v"><code>8080</code> (container: 80)</div>
+          </div>
+          <p class="muted small">
+            İpucu: <code>kubectl port-forward svc/portfolio-dashboard 8080:80 -n portfolio</code>
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="cardTitle">Health</div>
+          <div class="healthRow">
+            <div class="health">
+              <div class="healthLabel">Uptime</div>
+              <div class="healthValue" id="uptime">0s</div>
+            </div>
+            <div class="health">
+              <div class="healthLabel">Build</div>
+              <div class="healthValue" id="build">local</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="muted small">
+            Bu container <code>/healthz</code> endpoint’i de sağlar (K8s readiness/liveness için).
+          </div>
+        </article>
+
+        <article class="card" id="contact">
+          <div class="cardTitle">İletişim</div>
+          <form data-validate>
+            <div class="form-group">
+              <label for="name">Ad Soyad *</label>
+              <input type="text" id="name" name="name" required minlength="2" placeholder="Adınız ve soyadınız" />
+            </div>
+            <div class="form-group">
+              <label for="email">E-posta *</label>
+              <input type="email" id="email" name="email" required placeholder="ornek@email.com" />
+            </div>
+            <div class="form-group">
+              <label for="subject">Konu</label>
+              <input type="text" id="subject" name="subject" placeholder="Mesaj konusu" />
+            </div>
+            <div class="form-group">
+              <label for="message">Mesaj *</label>
+              <textarea id="message" name="message" required minlength="10" rows="4" placeholder="Mesajınız..."></textarea>
+            </div>
+            <button type="submit" class="btn">Gönder</button>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <span class="muted">© <span id="year"></span> Portfolio Dashboard</span>
+      <span class="muted">K8s demo | <a href="/healthz" target="_blank">Health Check</a></span>
+    </footer>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,186 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:14-alpine
+    container_name: portfolio-postgres
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: portfolio
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgresql-auth:
+    image: postgres:14-alpine
+    container_name: portfolio-postgres-auth
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-auth-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: portfolio-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: portfolio-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: portfolio-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: portfolio-backend
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    env_file:
+      - .env.dev
+    environment:
+      ENV: development
+      SERVER_PORT: 8080
+      SERVER_HOST: 0.0.0.0
+      DB_HOST: postgresql
+      DB_PORT: 5432
+      DB_USER: portfolio
+      DB_PASSWORD: password
+      DB_NAME: portfolio
+      DB_SSLMODE: disable
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:9092
+      AUTH_SERVICE_URL: http://auth-service:8081
+      JWT_SECRET: your-secret-key
+      LOG_LEVEL: info
+      # Seeder Config
+      ADMIN_EMAIL: admin@portfolio.com
+      ADMIN_PASSWORD: Admin123!
+      ADMIN_NAME: Admin User
+      PORTFOLIO_NAME: Muhsin Kılıç
+      PORTFOLIO_TITLE: Fullstack Developer
+      PORTFOLIO_EMAIL: kmuhsinn@gmail.com
+      PORTFOLIO_BIO: Driving web platform optimizations for enhanced performance and user experience across complex systems. Team mate, improving engineering efficiency through cutting-edge technology and best practices. Experienced in developing scalable AI solutions and automation, streamlining processes and delivering critical features for teams.
+      PORTFOLIO_GITHUB: https://github.com/kmuhsinn
+      PORTFOLIO_LINKEDIN: https://linkedin.com/in/muhsin-kilic
+      PORTFOLIO_PHONE: +905377812189
+      PORTFOLIO_THEME: dark
+      PORTFOLIO_LANGUAGE: en
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    command: ./main
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: portfolio-auth-service
+    depends_on:
+      postgresql-auth:
+        condition: service_healthy
+    env_file:
+      - .env.dev
+    environment:
+      ENV: development
+      AUTH_SERVICE_PORT: 8081
+      AUTH_SERVICE_HOST: 0.0.0.0
+      DB_HOST: postgresql-auth
+      DB_PORT: 5432
+      DB_USER: portfolio
+      DB_PASSWORD: password
+      AUTH_DB_NAME: auth_db
+      AUTH_DB_SSLMODE: disable
+      JWT_SECRET: dev-secret-key
+      LOG_LEVEL: debug
+      # Seeder Config
+      ADMIN_EMAIL: admin@portfolio.com
+      ADMIN_PASSWORD: Admin123!
+      ADMIN_NAME: Admin User
+      # Seeder Config
+      ADMIN_EMAIL: admin@portfolio.com
+      ADMIN_PASSWORD: Admin123!
+      ADMIN_NAME: Admin User
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./auth-service:/app
+    command: ./main
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:8080}
+        - VITE_AUTH_URL=${VITE_AUTH_URL:-http://localhost:8081}
+    container_name: portfolio-frontend
+    depends_on:
+      - backend
+      - auth-service
+    env_file:
+      - .env.dev
+    environment:
+      ENV: development
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres-data:
+  postgres-auth-data:
+  redis-data:

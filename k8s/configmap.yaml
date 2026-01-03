@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-config
+  namespace: portfolio
+data:
+  # Environment
+  ENV: "production"
+  
+  # Backend Configuration
+  SERVER_PORT: "8080"
+  SERVER_HOST: "0.0.0.0"
+  LOG_LEVEL: "info"
+  
+  # Database Configuration
+  DB_HOST: "postgresql"
+  DB_PORT: "5432"
+  DB_USER: "portfolio"
+  DB_NAME: "portfolio"
+  DB_SSLMODE: "disable"
+  
+  # Redis Configuration
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  
+  # Kafka Configuration
+  KAFKA_BROKERS: "kafka:9092"
+  
+  # Auth Service Configuration
+  AUTH_SERVICE_URL: "http://auth-service:80"
+  AUTH_SERVICE_PORT: "8081"
+  AUTH_SERVICE_HOST: "0.0.0.0"
+  AUTH_DB_NAME: "auth_db"
+  AUTH_DB_HOST: "postgresql"
+  AUTH_DB_PORT: "5432"
+  AUTH_DB_USER: "portfolio"
+  AUTH_DB_SSLMODE: "disable"
+  
+  # JWT Configuration
+  JWT_ACCESS_EXPIRY: "15m"
+  JWT_REFRESH_EXPIRY: "168h"
+  
+  # Frontend Configuration
+  VITE_API_URL: "http://backend:80"
+  VITE_AUTH_URL: "http://auth-service:80"
+  
+  # Seeder Configuration
+  # Admin User (Auth Service)
+  ADMIN_EMAIL: "admin@portfolio.com"
+  ADMIN_NAME: "Admin User"
+  
+  # Portfolio Data (Backend)
+  PORTFOLIO_NAME: "Muhsin Kılıç"
+  PORTFOLIO_TITLE: "Fullstack Developer"
+  PORTFOLIO_EMAIL: "kmuhsinn@gmail.com"
+  PORTFOLIO_BIO: "Driving web platform optimizations for enhanced performance and user experience across complex systems. Team mate, improving engineering efficiency through cutting-edge technology and best practices. Experienced in developing scalable AI solutions and automation, streamlining processes and delivering critical features for teams."
+  PORTFOLIO_GITHUB: "https://github.com/kmuhsinn"
+  PORTFOLIO_LINKEDIN: "https://linkedin.com/in/muhsin-kilic"
+  PORTFOLIO_PHONE: "+905377812189"
+  PORTFOLIO_THEME: "dark"
+  PORTFOLIO_LANGUAGE: "en"
+

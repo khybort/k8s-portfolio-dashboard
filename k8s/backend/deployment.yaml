@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: portfolio
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: portfolio-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        env:
+        - name: ENV
+          value: "production"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: db-password
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: jwt-secret
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: redis-password
+              optional: true
+        - name: DB_SSLMODE
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: DB_SSLMODE
+        - name: REDIS_DB
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: REDIS_DB
+        # Seeder Config
+        - name: PORTFOLIO_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_NAME
+        - name: PORTFOLIO_TITLE
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_TITLE
+        - name: PORTFOLIO_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_EMAIL
+        - name: PORTFOLIO_BIO
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_BIO
+        - name: PORTFOLIO_GITHUB
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_GITHUB
+        - name: PORTFOLIO_LINKEDIN
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_LINKEDIN
+        - name: PORTFOLIO_PHONE
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_PHONE
+        - name: PORTFOLIO_THEME
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_THEME
+        - name: PORTFOLIO_LANGUAGE
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: PORTFOLIO_LANGUAGE
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+

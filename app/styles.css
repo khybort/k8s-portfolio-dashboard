@@ -1,0 +1,318 @@
+:root {
+  --bg0: #060913;
+  --bg1: #0b1025;
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.68);
+  --accent: #7c3aed;
+  --accent2: #22c55e;
+  --shadow: rgba(0, 0, 0, 0.35);
+}
+
+:root.light {
+  --bg0: #f6f7fb;
+  --bg1: #ffffff;
+  --card: rgba(17, 24, 39, 0.04);
+  --border: rgba(17, 24, 39, 0.10);
+  --text: rgba(17, 24, 39, 0.92);
+  --muted: rgba(17, 24, 39, 0.60);
+  --accent: #6d28d9;
+  --accent2: #16a34a;
+  --shadow: rgba(2, 6, 23, 0.10);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
+              radial-gradient(900px 500px at 90% 20%, rgba(34, 197, 94, 0.25), transparent 55%),
+              linear-gradient(180deg, var(--bg0), var(--bg1));
+  color: var(--text);
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.35;
+  pointer-events: none;
+  mask-image: radial-gradient(circle at 30% 10%, black 40%, transparent 70%);
+}
+
+.container {
+  width: min(1100px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0 18px 0;
+}
+
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(34, 197, 94, 0.85));
+  box-shadow: 0 12px 30px var(--shadow);
+  font-weight: 800;
+}
+
+.title { font-weight: 800; letter-spacing: 0.2px; font-size: 18px; }
+.subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent2);
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.18);
+  transition: all 0.3s ease;
+}
+
+.dot.healthy {
+  background: var(--accent2);
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.18);
+}
+
+.dot.unhealthy {
+  background: #ef4444;
+  box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.18);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+  padding-bottom: 26px;
+}
+
+.card {
+  grid-column: span 6;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.cardTitle {
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+.chips { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.12);
+}
+
+.list {
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(124, 58, 237, 0.22);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.btn, .btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+
+.btn {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(124, 58, 237, 0.55));
+  color: white;
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+.btnSecondary {
+  background: rgba(0,0,0,0.12);
+  color: var(--text);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 14px;
+  align-items: center;
+}
+.k { color: var(--muted); font-size: 13px; }
+.v code {
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.12);
+}
+
+.healthRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.health {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.10);
+}
+.healthLabel { font-size: 12px; color: var(--muted); }
+.healthValue { font-size: 16px; font-weight: 800; margin-top: 6px; }
+
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 26px 0;
+}
+
+.footer a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer a:hover {
+  color: var(--text);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-group input.error,
+.form-group textarea.error {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+.form-error {
+  display: none;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.form-group button[type="submit"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.form-group button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 920px) {
+  .card { grid-column: span 12; }
+  .kv { grid-template-columns: 120px 1fr; }
+  .healthRow { grid-template-columns: 1fr; }
+}
+

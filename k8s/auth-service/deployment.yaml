@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: portfolio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: portfolio-auth:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        env:
+        - name: ENV
+          value: "production"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: auth-db-password
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: AUTH_DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: AUTH_DB_PORT
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: AUTH_DB_USER
+        - name: AUTH_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: AUTH_DB_NAME
+        - name: AUTH_DB_SSLMODE
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: AUTH_DB_SSLMODE
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: jwt-secret
+        - name: ADMIN_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: ADMIN_EMAIL
+        - name: ADMIN_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: ADMIN_NAME
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: admin-password
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+

@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed-auth
+  namespace: portfolio
+spec:
+  template:
+    spec:
+      containers:
+      - name: seed
+        image: portfolio-auth:latest
+        imagePullPolicy: Never
+        command: ["/root/seed"]
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        env:
+        - name: ENV
+          value: "production"
+        - name: DB_HOST
+          value: "postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: "portfolio"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: auth-db-password
+        - name: AUTH_DB_NAME
+          value: "auth_db"
+        - name: ADMIN_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: ADMIN_EMAIL
+        - name: ADMIN_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: ADMIN_NAME
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: portfolio-secrets
+              key: admin-password
+      restartPolicy: Never
+  backoffLimit: 3
+
